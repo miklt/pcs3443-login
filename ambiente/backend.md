@@ -1,25 +1,58 @@
 # Backend
 
-## Backend
+O backend atual é uma API FastAPI escrita para Python 3.14. O projeto não usa
+mais Flask nem Pipenv.
 
-Para o desenvolvimento do backend foi utilizada a linguagem de programação Python e o editor vs code. Você pode obter eles nos seguintes links: [https://www.python.org/downloads/](https://www.python.org/downloads/) e [https://code.visualstudio.com/download](https://code.visualstudio.com/download), respectivamente.
+## Dependências principais
 
-&#x20;Para o gerenciamento de dependências do projeto e execução do ambiente em modo de desenvolvimento é usado o Pipenv. Nós usaremos ele para criar um ambiente isolado, de forma que as bibliotecas que usemos sejam exclusivas para o nosso projeto. Se você não está acostumado a usar o pipenv, pode ler mais sobre ele em: [https://docs.pipenv.org/](https://docs.pipenv.org/) ou no seguinte video
+| Pacote | Responsabilidade |
+| --- | --- |
+| FastAPI e Uvicorn | API HTTP e servidor ASGI |
+| SQLAlchemy 2 | mapeamento objeto-relacional e sessões de banco |
+| Pydantic 2 e pydantic-settings | validação dos payloads e configuração |
+| psycopg2-binary | conexão com PostgreSQL |
+| PyJWT | criação e validação dos tokens HS256 |
+| bcrypt | hash e verificação de senhas |
 
-{% embed url="https://www.youtube.com/watch?v=zDYL22QNiWk" %}
+As dependências de execução estão em `backend/requirements.txt` e também são
+declaradas em `backend/pyproject.toml`. `backend/requirements-dev.txt` adiciona
+pytest, HTTPX e Ruff.
 
-A seguir algumas referências para a instalação do Pipenv.
+## Preparação sem Docker
 
-{% tabs %}
-{% tab title="Windows" %}
-[https://www.pythontutorial.net/python-basics/install-pipenv-windows/](https://www.pythontutorial.net/python-basics/install-pipenv-windows/)
-{% endtab %}
+No macOS ou Linux:
 
-{% tab title="Ubuntu" %}
-[https://dev.to/4geeksacademy/instalacion-python-flask-pipenv-en-linux-ubuntu-20-4809](https://dev.to/4geeksacademy/instalacion-python-flask-pipenv-en-linux-ubuntu-20-4809)
-{% endtab %}
+```bash
+cd backend
+python3.14 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
+```
 
-{% tab title="Mac" %}
-No caso do Mac, é recomendado utilizado o gerenciador brew para a instalação [https://formulae.brew.sh/formula/pipenv](https://formulae.brew.sh/formula/pipenv)
-{% endtab %}
-{% endtabs %}
+No PowerShell:
+
+```powershell
+cd backend
+py -3.14 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+Copy-Item .env.example .env
+```
+
+O arquivo `.env.example` já configura SQLite. Para desenvolvimento com
+PostgreSQL, altere `DATABASE_URL` para uma URL compatível com o SQLAlchemy.
+
+## Variáveis do backend
+
+| Variável | Padrão/finalidade |
+| --- | --- |
+| `DATABASE_URL` | `sqlite:///./data.db`; URL canônica do banco |
+| `SQLALCHEMY_DATABASE_URI` | nome legado aceito se `DATABASE_URL` não existir |
+| `JWT_SECRET_KEY` | segredo de assinatura, igual ao `JWT_SECRET` do frontend |
+| `JWT_ALGORITHM` | `HS256` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | 30 |
+| `REFRESH_TOKEN_EXPIRE_DAYS` | 7 |
+| `BACKEND_CORS_ORIGINS` | lista JSON, CSV ou uma origem permitida |
+
+Em produção, gere um segredo forte e configure explicitamente as origens CORS.

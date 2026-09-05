@@ -1,41 +1,82 @@
-# Banco de dados (Postgresql)
+# Banco de dados PostgreSQL
 
-## Pre-requisitos <a href="#user-content-pre-requisitos" id="user-content-pre-requisitos"></a>
+Em produção, o PostgreSQL 16 roda no mesmo servidor do backend, no serviço `db`
+definido em `infra/docker-compose.prod.yml`. A porta 5432 não é publicada no
+host: somente o contêiner `backend` acessa o banco pela rede interna.
 
-1. Ter uma conta na plataforma Okteto
-2. (opcional) Ter um ambiente gráfico para conexão ao banco de dados ([dbbeaver](https://dbeaver.io/), [datagrip ](https://www.jetbrains.com/pt-br/community/education/#students)ou o [pgAdmin](https://www.pgadmin.org/))
+## Configuração
 
-## Objetivo <a href="#user-content-objetivo" id="user-content-objetivo"></a>
+O arquivo `infra/.env.prod` não é versionado. No deploy automatizado ele é
+gerado no servidor a partir dos GitHub Secrets. Para uma instalação manual,
+crie-o a partir do modelo:
 
-Implantar no cluster um banco de dados sql e conectar-se a ele no ambiente de produção.
+```bash
+cp infra/.env.example infra/.env.prod
+```
 
-## Passos <a href="#user-content-passos" id="user-content-passos"></a>
+Defina pelo menos:
 
-1\. Logar na plataforma Okteto.
+```dotenv
+POSTGRES_USER=login
+POSTGRES_PASSWORD=uma-senha-forte
+POSTGRES_DB=pcs3443
+JWT_SECRET_KEY=um-segredo-jwt-forte
+BACKEND_CORS_ORIGINS=["https://seu-app.vercel.app"]
+BACKEND_PORT=8000
+```
 
-2\. Clicar em Deploy
+O Compose monta internamente a URL:
 
-3\. Escolher a opção "from Chart" e selecionar postgresql, depois clicar em "Deploy"
+```text
+postgresql+psycopg2://POSTGRES_USER:POSTGRES_PASSWORD@db/POSTGRES_DB
+```
 
-4\. A seguir aparecerá uma tela para configurar o nome de usuário, nome do banco de dados e senha. Mantenha os valores padrão se preferir. O tamanho de armazenamento oferecido é de 2GB, o que deve ser suficiente para o projeto. Clicar em "Deploy" novamente.
+Não é necessário definir `DATABASE_URL` no arquivo: o serviço `backend` a
+constrói com os valores acima.
 
-5\. Esperar até que o serviço esteja pronto.
+## Inicialização e persistência
 
-Com os dados de conexão padrão:&#x20;
+Ao iniciar, o FastAPI executa `Base.metadata.create_all` e cria a tabela
+`users` caso ela ainda não exista. O projeto não usa Alembic ou outro sistema de
+migrações; mudanças futuras no modelo exigirão uma estratégia de migração.
 
-> * host: postgresql.\<nome-da-conta>.svc.cluster.local
-> * port: 5432
-> * user: okteto
-> * password: okteto
-> * database: okteto
+Os dados ficam no volume nomeado `pgdata-prod`. Recriar o contêiner não apaga o
+volume.
 
-Para que o backend consiga se conectar ao banco de dados, é preciso alterar a chave `SQLALCHEMY_DATABASE_URI`  do arquivo `.env` na pasta `backend` . Com os dados acima, ficaria:`SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://okteto:okteto@postgresql.<nome-da-conta>.svc.cluster.local/okteto?client_encoding=utf8`
+{% hint style="danger" %}
+Não execute `docker compose down -v` em produção: a opção `-v` remove o volume
+do PostgreSQL e seus dados.
+{% endhint %}
 
-Para poder se conectar a partir do ambiente local de desenvolvimento, é preciso criar um tunel de conexão, de forma que o cliente (dBeaver, pgAdmin, datagrip ou outros) se conecte remotamente no servidor.\
-Para isso, é preciso abrir o terminal e executar o seguinte comando:
+## Estado e acesso administrativo
 
-`kubectl port-forward --namespace $(namespaceId) svc/postgresql 5432:5432` (Lembre-se de substituir $(namespaceId) pelo seu seu namespace)
+No servidor, a partir da raiz do repositório:
 
-Se tudo der certo, as conexões na porta 5432 do computador local serão encaminhadas para o servidor no cluster.
+```bash
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml ps
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml logs -f db
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml exec db \
+  psql -U login -d pcs3443
+```
 
-Para testar, podemos abrir o nosso cliente (dBeaver) e passar a url de conexão, trocando a parte: `postgresql.<nome-da-conta>.svc.cluster.local` por `localhost`
+Se você alterar `POSTGRES_USER` ou `POSTGRES_DB`, ajuste os dois últimos
+argumentos do `psql`.
+
+Para listar usuários sem expor hashes:
+
+```sql
+SELECT id, username, email FROM users ORDER BY id;
+```
+
+## Backup
+
+Exemplo de backup lógico no servidor:
+
+```bash
+docker compose --env-file infra/.env.prod -f infra/docker-compose.prod.yml exec db \
+  pg_dump -U login pcs3443 > backup-$(date +%F).sql
+```
+
+Proteja o arquivo gerado e teste periodicamente a restauração em outro banco.
+O repositório fornece o comando de backup como operação básica, mas não agenda
+backups nem envia cópias para armazenamento externo.

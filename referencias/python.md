@@ -1,19 +1,34 @@
-# Python
+# Python e backend
 
-O seguinte tutorial de ython oferece uma boa introdução à linguagem numa plataforma interativa (requer criar uma conta)
+O backend requer Python 3.14 e usa ambientes virtuais padrão com `venv`, sem
+Pipenv.
 
-* [https://www.datacamp.com/courses/intro-to-python-for-data-science](https://www.datacamp.com/courses/intro-to-python-for-data-science)
+## Python
 
-O seguinte perfil no github tem alguns repositórios úteis, com projetos prontos em python:
+- [Tutorial oficial do Python 3.14](https://docs.python.org/3.14/tutorial/);
+- [Ambientes virtuais com venv](https://docs.python.org/3.14/library/venv.html);
+- [Instalação de pacotes com pip](https://docs.python.org/3.14/installing/);
+- [Typing](https://docs.python.org/3.14/library/typing.html).
 
-* [https://github.com/tecladocode](https://github.com/tecladocode)
+## FastAPI e servidor
 
-## Flask-Restful
+- [Tutorial do FastAPI](https://fastapi.tiangolo.com/tutorial/);
+- [Bancos SQL no FastAPI](https://fastapi.tiangolo.com/tutorial/sql-databases/);
+- [CORS no FastAPI](https://fastapi.tiangolo.com/tutorial/cors/);
+- [JWT e hash de senhas](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/);
+- [Uvicorn](https://www.uvicorn.org/).
 
-O [flask](https://flask.palletsprojects.com/en/2.0.x/) é um micro framework para desenvolvimento de aplicações web em python. A extensão flask-restful foca no desenvolvimento de APIs REST. A documentação oficial é o melhor lugar para seu aprendizado: [https://flask-restful.readthedocs.io/en/latest/](https://flask-restful.readthedocs.io/en/latest/)
+## Dados e validação
 
-## Flask-SqlAlchemy
+- [Tutorial do SQLAlchemy 2](https://docs.sqlalchemy.org/en/20/tutorial/);
+- [Início rápido do ORM](https://docs.sqlalchemy.org/en/20/orm/quickstart.html);
+- [Pydantic](https://docs.pydantic.dev/latest/);
+- [pydantic-settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/).
 
-No site oficial está a referência da biblioteca e alguns exemplos de uso da mesma:
+## Segurança
 
-* [https://flask-sqlalchemy.palletsprojects.com/en/2.x/](https://flask-sqlalchemy.palletsprojects.com/en/2.x/)&#x20;
+- [PyJWT](https://pyjwt.readthedocs.io/en/stable/);
+- [bcrypt para Python](https://github.com/pyca/bcrypt);
+
+Os contratos da API também podem ser explorados pela Swagger UI em `/docs`
+enquanto o backend estiver em execução.

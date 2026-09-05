@@ -1,9 +1,38 @@
 # Frontend
 
-## Frontend
+O frontend usa Node.js 24+, npm, Next.js 15 com App Router, React 19,
+TypeScript 5, Tailwind CSS 4, React Hook Form e Zod.
 
-No caso do frontend é usada a versão mais recente de Node e o framework Next.js. Na página oficial de node [https://nodejs.org/en/download/current/](https://nodejs.org/en/download/current/) encontraremos os links para instalação do ambiente no seu sistema operacional. No nosso projeto usaremos o gerenciador de pacotes npm, que vem junto com o Node.  Se você ainda não trabalhou com javascript no lado do servidor seria interessante dar uma olhada no funcionamento dos projetos em node e como eles usam o npm.
+## Preparação sem Docker
 
-{% embed url="https://www.youtube.com/watch?v=Z7oY19lixpE" %}
+```bash
+cd frontend
+npm install
+cp .env.example .env.local
+```
 
-No seguinte link é explicado como funciona um projeto Node usando o gerenciador npm: [https://nodesource.com/blog/an-absolute-beginners-guide-to-using-npm/](https://nodesource.com/blog/an-absolute-beginners-guide-to-using-npm/)
+Edite `.env.local`:
+
+```dotenv
+BACKEND_URL=http://localhost:8000
+JWT_SECRET=segredo-troque-em-producao
+```
+
+`BACKEND_URL` é usada somente no servidor Next.js pelos Route Handlers.
+`JWT_SECRET` valida o token na página de perfil e deve ser idêntica a
+`JWT_SECRET_KEY` do backend.
+
+Os nomes antigos `URL_API_BACKEND` e `JWT_KEY` ainda funcionam como fallback,
+mas os nomes acima são os canônicos.
+
+## Scripts npm
+
+| Comando | Finalidade |
+| --- | --- |
+| `npm run dev` | servidor de desenvolvimento em http://localhost:3000 |
+| `npm run build` | build de produção |
+| `npm start` | inicia um build já gerado |
+| `npm run lint` | executa o lint configurado pelo Next.js |
+| `npm run typecheck` | verifica os tipos sem gerar arquivos |
+| `npm run cypress:open` | abre a interface do Cypress |
+| `npm run cypress:run` | executa os testes end-to-end |
