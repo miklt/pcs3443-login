@@ -1,23 +1,30 @@
-# Controle de Versão
+# Controle de versão
 
-## Git
+O código da aplicação e esta documentação ficam em repositórios Git separados:
 
-Resumidamente, o Git é uma ferramenta para controle de versões de arquivos. Nós usamos ele para acompanhar as alterações dos arquivos (código fonte) dentro de um repositório. O Github é uma plataforma onde é possível disponibilizar um repositório e permitir que outros usuários possam fazer alterações nesse repositório seguindo os fluxos próprios do Git.&#x20;
+| Conteúdo | Repositório |
+| --- | --- |
+| Aplicação | [miklt/pcs3443-2021](https://github.com/miklt/pcs3443-2021) |
+| Documentação | [miklt/pcs3443-login](https://github.com/miklt/pcs3443-login) |
 
-A seguir apresentamos como referência uns guias para a instalação do Git
+Git registra o histórico local dos arquivos; GitHub hospeda os repositórios,
+revisões e automações. No projeto da aplicação, pushes na branch `main` que
+alterem o backend ou sua infraestrutura podem acionar o workflow de implantação.
 
-{% tabs %}
-{% tab title="Windows" %}
-[https://www.atlassian.com/git/tutorials/install-git#windows](https://www.atlassian.com/git/tutorials/install-git#windows)
-{% endtab %}
+## Fluxo básico
 
-{% tab title="Linux " %}
-[https://www.atlassian.com/git/tutorials/install-git#linux](https://www.atlassian.com/git/tutorials/install-git#linux)
-{% endtab %}
+```bash
+git clone git@github.com:miklt/pcs3443-2021.git
+cd pcs3443-2021
+git switch -c minha-alteracao
+git status
+git add caminho/do/arquivo
+git commit -m "Descrição objetiva da alteração"
+git push -u origin minha-alteracao
+```
 
-{% tab title="Mac" %}
-[https://www.atlassian.com/git/tutorials/install-git#mac-os-x](https://www.atlassian.com/git/tutorials/install-git#mac-os-x)
-{% endtab %}
-{% endtabs %}
+Abra então um pull request no GitHub. Antes do commit, confira `git diff` e
+execute as verificações relacionadas ao componente alterado.
 
-Se você deseja saber mais sobre o Git, os 2 primeiros capítulos do livro [https://git-scm.com/book/en/v2](https://git-scm.com/book/en/v2) são uma excelente referência. Para mais informações sobre o Github, este curso de uma hora [https://lab.github.com/githubtraining/introduction-to-github](https://lab.github.com/githubtraining/introduction-to-github) apresenta a plataforma e o seu uso.
+Para conhecer os conceitos e outras formas de autenticação do clone, consulte
+as [referências de Git](../referencias/recursos.md).
