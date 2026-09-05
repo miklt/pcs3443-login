@@ -1,0 +1,14 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+version: 1
+
+site:
+  title: PCS3443 — Aplicação de Login
+  structure:
+    - type: space
+      key: space-documentacao
+      title: Documentação
+      path: documentacao
+      default: true
+      content:
+        directory: ./
+        language: pt-br
