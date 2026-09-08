@@ -2,7 +2,7 @@ $schema: https://api.gitbook.com/gitbook-docs.yaml
 version: 1
 
 site:
-  title: PCS3443 — Aplicação de Login
+  title: Labsoft — Aplicação de Login
   structure:
     - type: space
       key: space-documentacao
