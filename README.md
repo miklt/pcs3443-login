@@ -1,4 +1,4 @@
-# Aplicação de Login — PCS3443
+# Aplicação de Login - Labsoft
 
 Esta documentação descreve o projeto de referência disponível em
 [github.com/miklt/pcs3443-2021](https://github.com/miklt/pcs3443-2021).
@@ -13,12 +13,6 @@ O sistema demonstra uma aplicação web completa de cadastro e autenticação:
 
 A aplicação publicada está em
 [pcs3443-2021.vercel.app](https://pcs3443-2021.vercel.app/).
-
-{% hint style="info" %}
-O projeto foi modernizado. Referências antigas a Flask, Flask-RESTful,
-Marshmallow, Next.js Pages Router, Pipenv e Okteto não descrevem mais a
-implementação atual.
-{% endhint %}
 
 ## Login
 
